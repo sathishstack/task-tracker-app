@@ -3,6 +3,8 @@ const {
     getPendingReminders,
     markAsTriggered
 } = require("../services/reminderService");
+const sendEmail = require("../utils/emailService");
+const User = require("../models/User");
 
 const startReminderJob = () => {
     // runs every minute
@@ -14,7 +16,17 @@ const startReminderJob = () => {
         for (const reminder of reminders) {
             console.log(`🔔 Reminder: ${reminder.message}`);
 
-            // mark as triggered
+            // 🔍 Get user email
+            const user = await User.findById(reminder.userId);
+
+            if (user?.email) {
+                await sendEmail(
+                    user.email,
+                    "Reminder Notification",
+                    reminder.message
+                );
+            }
+
             await markAsTriggered(reminder._id);
         }
     });
