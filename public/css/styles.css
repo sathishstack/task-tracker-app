@@ -107,16 +107,20 @@ body {
 
 /* Cards */
 .card {
-    background-color: var(--bg-card);
-    border: 1px solid var(--border);
+    background-color: rgba(30, 41, 59, 0.7);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: var(--radius-md);
     padding: 1.5rem;
-    box-shadow: var(--shadow-sm);
-    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+    transition: transform 0.2s, box-shadow 0.2s, background-color 0.2s, border-color 0.2s;
 }
 
 .card:hover {
-    box-shadow: var(--shadow-md);
+    background-color: rgba(30, 41, 59, 0.85);
+    box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.4);
+    border-color: rgba(255, 255, 255, 0.15);
 }
 
 .card-header {
@@ -314,10 +318,20 @@ ul {
 }
 
 .stat-box {
-    background-color: rgba(0,0,0,0.2);
+    background-color: rgba(30, 41, 59, 0.7);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
     padding: 1rem;
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius-md);
     text-align: center;
+    transition: transform 0.2s;
+}
+
+.stat-box:hover {
+    transform: translateY(-2px);
+    background-color: rgba(30, 41, 59, 0.85);
 }
 
 .stat-value {
@@ -379,6 +393,51 @@ ul {
         width: 100% !important;
     }
 }
+
+/* Empty States */
+.empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--text-muted);
+}
+.empty-state-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+/* Inline Editing */
+.editable-title {
+    background: transparent;
+    border: 1px dashed transparent;
+    color: inherit;
+    font: inherit;
+    width: 100%;
+    padding: 2px 4px;
+    margin: -2px -4px;
+    border-radius: 4px;
+    transition: border-color 0.2s, background-color 0.2s;
+}
+.editable-title:hover {
+    border-color: rgba(255,255,255,0.2);
+}
+.editable-title:focus {
+    outline: none;
+    border-color: var(--primary);
+    background: rgba(0,0,0,0.2);
+}
+
+/* Markdown Notes */
+.markdown-body {
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+.markdown-body p { margin-bottom: 0.75rem; }
+.markdown-body ul { padding-left: 1.5rem; list-style: disc; margin-bottom: 0.75rem; }
+.markdown-body pre { background: rgba(0,0,0,0.3); padding: 0.5rem; border-radius: var(--radius-sm); overflow-x: auto; margin-bottom: 0.75rem; }
+.markdown-body code { font-family: monospace; background: rgba(0,0,0,0.3); padding: 0.1rem 0.3rem; border-radius: 3px; }
+.markdown-body a { color: var(--primary); text-decoration: none; }
+.markdown-body a:hover { text-decoration: underline; }
 
 .notes-grid {
     display: grid;

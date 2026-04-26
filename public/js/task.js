@@ -5,12 +5,20 @@ async function loadTasks() {
     try {
         loading.style.display = "block";
 
-        const res = await request("/tasks");
+        const filterVal = document.getElementById("taskFilter")?.value;
+        const url = filterVal ? `/tasks?status=${filterVal}` : "/tasks";
+
+        const res = await request(url);
 
         list.innerHTML = "";
 
         if (!res.data?.length) {
-            list.innerHTML = "<li>No tasks found</li>";
+            list.innerHTML = `
+                <div class="empty-state animate-fade-in">
+                    <div class="empty-state-icon">📋</div>
+                    <p>No tasks found.</p>
+                </div>
+            `;
             return;
         }
 
@@ -23,7 +31,7 @@ async function loadTasks() {
 
             li.innerHTML = `
                 <div class="list-item-content">
-                    <div class="list-item-title">${task.title}</div>
+                    <input class="editable-title list-item-title" value="${task.title.replace(/"/g, '&quot;')}" onchange="updateTaskTitle('${task._id}', this.value, this)" data-original="${task.title.replace(/"/g, '&quot;')}" />
                     <div class="list-item-meta">
                         <span class="badge ${statusClass}">${task.status}</span>
                         <span class="badge ${priorityClass}">${task.priority || 'medium'}</span>
@@ -68,6 +76,23 @@ async function markDone(id) {
         loadTasks();
     } catch (err) {
         // api.js handles error toast
+    }
+}
+
+async function updateTaskTitle(id, newTitle, inputEl) {
+    const oldTitle = inputEl.getAttribute('data-original');
+    if (!newTitle.trim()) {
+        inputEl.value = oldTitle;
+        return showToast("Title cannot be empty", "warning");
+    }
+    if (newTitle === oldTitle) return;
+
+    try {
+        await request(`/tasks/${id}`, "PUT", { title: newTitle });
+        showToast("Task renamed", "success");
+        loadTasks();
+    } catch (err) {
+        inputEl.value = oldTitle; // revert
     }
 }
 

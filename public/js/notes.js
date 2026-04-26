@@ -1,40 +1,59 @@
 const notesList = document.getElementById("notes");
 
 async function loadNotes() {
-    const res = await request("/notes");
-    notesList.innerHTML = "";
+    try {
+        const res = await request("/notes");
+        notesList.innerHTML = "";
 
-    res.data.forEach(n => {
-        const li = document.createElement("li");
-        li.style.backgroundColor = "rgba(0,0,0,0.2)";
-        li.style.padding = "1rem";
-        li.style.borderRadius = "var(--radius-sm)";
-        li.style.border = "1px solid var(--border)";
-        li.className = "animate-fade-in";
-        
-        const tagsHtml = n.tags.map(t => `<span class="badge badge-low" style="margin-right: 0.2rem;">${t}</span>`).join("");
+        if (!res.data?.length) {
+            notesList.innerHTML = `
+                <div class="empty-state animate-fade-in" style="grid-column: 1 / -1;">
+                    <div class="empty-state-icon">📝</div>
+                    <p>No notes yet. Start writing!</p>
+                </div>
+            `;
+            return;
+        }
 
-        li.innerHTML = `
-            <h4 style="margin-bottom: 0.5rem; color: var(--primary);">${n.title}</h4>
-            <p style="font-size: 0.9rem; margin-bottom: 1rem; color: var(--text-main);">${n.content || ''}</p>
-            <div>${tagsHtml}</div>
-        `;
-        notesList.appendChild(li);
-    });
+        res.data.forEach(n => {
+            const li = document.createElement("li");
+            li.className = "card animate-fade-in";
+            li.style.padding = "1rem";
+            
+            const tagsHtml = n.tags.map(t => `<span class="badge badge-low" style="margin-right: 0.2rem;">${t}</span>`).join("");
+            const parsedContent = n.content ? marked.parse(n.content) : '';
+
+            li.innerHTML = `
+                <h4 style="margin-bottom: 0.5rem; color: var(--primary);">${n.title}</h4>
+                <div class="markdown-body" style="margin-bottom: 1rem;">${parsedContent}</div>
+                <div>${tagsHtml}</div>
+            `;
+            notesList.appendChild(li);
+        });
+    } catch (err) {
+        showToast(err.message, "error");
+    }
 }
 
 async function createNote() {
     const title = noteTitle.value;
     const content = noteContent.value;
-    const tags = noteTags.value.split(",").map(t => t.trim());
+    const tags = noteTags.value.split(",").map(t => t.trim()).filter(Boolean);
 
-    await request("/notes", "POST", { title, content, tags });
+    if (!title) return showToast("Note title is required", "warning");
 
-    noteTitle.value = "";
-    noteContent.value = "";
-    noteTags.value = "";
-
-    loadNotes();
+    try {
+        await request("/notes", "POST", { title, content, tags });
+        
+        noteTitle.value = "";
+        noteContent.value = "";
+        noteTags.value = "";
+        
+        showToast("Note saved", "success");
+        loadNotes();
+    } catch (err) {
+        // api.js handles error toast
+    }
 }
 
 loadNotes();
