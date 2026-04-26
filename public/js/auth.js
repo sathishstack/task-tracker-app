@@ -10,7 +10,7 @@ const login = async () => {
             window.location.href = "/dashboard.html";
         }
     } catch (err) {
-        console.error("Login error", err);
+        // Error toast shown by api.js
     }
 };
 
@@ -27,6 +27,6 @@ const register = async () => {
             window.location.href = "/dashboard.html";
         }
     } catch (err) {
-        console.error("Registration error", err);
+        // Error toast shown by api.js
     }
 };

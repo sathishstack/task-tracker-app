@@ -9,8 +9,6 @@ const User = require("../models/User");
 const startReminderJob = () => {
     // runs every minute
     cron.schedule("* * * * *", async () => {
-        console.log("⏱ Checking reminders...");
-
         const reminders = await getPendingReminders();
 
         for (const reminder of reminders) {

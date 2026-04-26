@@ -41,7 +41,7 @@ async function loadStats() {
         }
 
     } catch (err) {
-        console.error(err);
+        // Error toast already shown by api.js
     }
 }
 
@@ -61,6 +61,6 @@ async function createReminder() {
         reminderTime.value = "";
         loadStats(); // Reload stats to show the new reminder
     } catch (err) {
-        console.error("Failed to create reminder", err);
+        // Error toast already shown by api.js
     }
 }
