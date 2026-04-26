@@ -308,7 +308,7 @@ ul {
 /* Stats grid */
 .stats-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     gap: 1rem;
     margin-bottom: 1.5rem;
 }
@@ -368,6 +368,22 @@ ul {
     display: flex;
     gap: 1rem;
     align-items: center;
+    flex-wrap: wrap;
+}
+
+@media (max-width: 600px) {
+    .flex-row > input,
+    .flex-row > select,
+    .flex-row > button {
+        flex: 1 1 100% !important;
+        width: 100% !important;
+    }
+}
+
+.notes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
 }
 
 .mt-1 { margin-top: 1rem; }
