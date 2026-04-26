@@ -1,0 +1,25 @@
+<script>
+    if (!localStorage.getItem("token")) {
+        window.location.href = "/login.html";
+    }
+</script>
+<h2>Dashboard</h2>
+
+<button onclick="loadTasks()">Load Tasks</button>
+<ul id="tasks"></ul>
+
+<script src="js/api.js"></script>
+<script>
+    async function loadTasks() {
+        const res = await request("/tasks");
+
+        const list = document.getElementById("tasks");
+        list.innerHTML = "";
+
+        res.data?.forEach(task => {
+            const li = document.createElement("li");
+            li.textContent = task.title + " (" + task.status + ")";
+            list.appendChild(li);
+        });
+    }
+</script>
