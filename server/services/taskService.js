@@ -5,13 +5,56 @@ const createTask = async (userId, data) => {
 };
 
 const getTasks = async (userId, query) => {
+    const {
+        status,
+        priority,
+        from,
+        to,
+        page = 1,
+        limit = 10,
+        sortBy = "createdAt",
+        order = "desc"
+    } = query;
+
+    // 🔎 Build filter
     const filter = { userId };
 
-    // Optional filters (basic; advanced comes Day 4)
-    if (query.status) filter.status = query.status;
-    if (query.priority) filter.priority = query.priority;
+    if (status) filter.status = status;
+    if (priority) filter.priority = priority;
 
-    return Task.find(filter).sort({ createdAt: -1 });
+    if (from || to) {
+        filter.dueDate = {};
+        if (from) filter.dueDate.$gte = new Date(from);
+        if (to) filter.dueDate.$lte = new Date(to);
+    }
+
+    const safeLimit = Math.min(parseInt(limit) || 10, 50);
+    const safePage = Math.max(parseInt(page) || 1, 1);
+    const skip = (safePage - 1) * safeLimit;
+
+    // 🔃 Sorting
+    const sort = {
+        [sortBy]: order === "asc" ? 1 : -1
+    };
+
+    // ⚡ Query (lean for performance)
+    const [tasks, total] = await Promise.all([
+        Task.find(filter)
+            .sort(sort)
+            .skip(skip)
+            .limit(safeLimit)
+            .lean(),
+        Task.countDocuments(filter)
+    ]);
+
+    return {
+        data: tasks,
+        meta: {
+            total,
+            page: parseInt(page),
+            pages: Math.ceil(total / limit)
+        }
+    };
 };
 
 const getTaskById = async (userId, taskId) => {

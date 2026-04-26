@@ -4,8 +4,7 @@ const taskSchema = new mongoose.Schema({
     userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
-        required: true,
-        index: true
+        required: true
     },
     title: {
         type: String,
@@ -19,19 +18,18 @@ const taskSchema = new mongoose.Schema({
     status: {
         type: String,
         enum: ["todo", "in-progress", "done"],
-        default: "todo",
-        index: true
+        default: "todo"
     },
     priority: {
         type: String,
         enum: ["low", "medium", "high"],
-        default: "medium",
-        index: true
+        default: "medium"
     },
     dueDate: {
-        type: Date,
-        index: true
+        type: Date
     }
 }, { timestamps: true });
+
+taskSchema.index({ userId: 1, status: 1, priority: 1, dueDate: 1 });
 
 module.exports = mongoose.model("Task", taskSchema);

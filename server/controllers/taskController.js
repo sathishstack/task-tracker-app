@@ -11,8 +11,8 @@ const create = async (req, res) => {
 
 const getAll = async (req, res) => {
     try {
-        const tasks = await taskService.getTasks(req.user.id, req.query);
-        res.json(tasks);
+        const result = await taskService.getTasks(req.user.id, req.query);
+        res.json(result);
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
