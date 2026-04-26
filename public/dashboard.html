@@ -1,25 +1,117 @@
-<script>
-    if (!localStorage.getItem("token")) {
-        window.location.href = "/login.html";
-    }
-</script>
-<h2>Dashboard</h2>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Task Tracker</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <script>
+        if (!localStorage.getItem("token")) {
+            window.location.href = "/login.html";
+        }
+    </script>
+    
+    <nav class="navbar animate-fade-in">
+        <h1>Task Tracker</h1>
+        <button class="outline small" onclick="logout()">Logout</button>
+    </nav>
 
-<button onclick="loadTasks()">Load Tasks</button>
-<ul id="tasks"></ul>
+    <div class="container animate-fade-in">
+        <div class="stats-grid">
+            <div class="stat-box">
+                <div class="stat-value" id="total">0</div>
+                <div class="stat-label">Total Tasks</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" id="completed">0</div>
+                <div class="stat-label">Completed</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" id="pending">0</div>
+                <div class="stat-label">Pending</div>
+            </div>
+        </div>
 
-<script src="js/api.js"></script>
-<script>
-    async function loadTasks() {
-        const res = await request("/tasks");
+        <div class="grid-layout">
+            <aside class="sidebar">
+                <div class="card">
+                    <div class="card-header">Activity Overview</div>
+                    <div style="max-width: 200px; margin: 0 auto;">
+                        <canvas id="chart"></canvas>
+                    </div>
+                </div>
 
-        const list = document.getElementById("tasks");
-        list.innerHTML = "";
+                <div class="card">
+                    <div class="card-header">Set Reminder</div>
+                    <div class="form-group">
+                        <input id="reminderMsg" placeholder="Reminder message..." />
+                    </div>
+                    <div class="form-group">
+                        <input id="reminderTime" type="datetime-local" />
+                    </div>
+                    <button style="width: 100%" onclick="createReminder()">Set Reminder</button>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">Upcoming Reminders</div>
+                    <ul id="reminders" style="font-size: 0.9rem; color: var(--text-muted);">
+                        <li>Loading...</li>
+                    </ul>
+                </div>
+            </aside>
 
-        res.data?.forEach(task => {
-            const li = document.createElement("li");
-            li.textContent = task.title + " (" + task.status + ")";
-            list.appendChild(li);
-        });
-    }
-</script>
+            <main class="main-content">
+                <div class="card">
+                    <div class="card-header">
+                        Tasks
+                    </div>
+                    
+                    <div class="flex-row mb-1">
+                        <input id="title" placeholder="What needs to be done?" style="flex: 1;" />
+                        <select id="priority" style="width: 120px;">
+                            <option value="low">Low</option>
+                            <option value="medium" selected>Medium</option>
+                            <option value="high">High</option>
+                        </select>
+                        <button onclick="createTask()">Add Task</button>
+                    </div>
+                    
+                    <p id="loading" style="display:none; color: var(--text-muted); font-size: 0.9rem;">Loading tasks...</p>
+                    <ul id="tasks"></ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        Notes
+                    </div>
+                    
+                    <div class="form-group">
+                        <input id="noteTitle" placeholder="Note Title" />
+                    </div>
+                    <div class="form-group">
+                        <textarea id="noteContent" placeholder="Write your note here..."></textarea>
+                    </div>
+                    <div class="flex-row mb-1">
+                        <input id="noteTags" placeholder="Tags (comma separated)" style="flex: 1;" />
+                        <button onclick="createNote()">Save Note</button>
+                    </div>
+                    
+                    <div style="margin-top: 1.5rem;">
+                        <h4>Saved Notes</h4>
+                        <ul id="notes" class="mt-1" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;"></ul>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/dashboard.js"></script>
+    <script src="js/task.js"></script>
+    <script src="js/notes.js"></script>
+</body>
+</html>

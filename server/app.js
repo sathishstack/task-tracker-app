@@ -6,6 +6,7 @@ const authRoutes = require("./routes/authRoutes");
 const taskRoutes = require("./routes/taskRoutes");
 const noteRoutes = require("./routes/noteRoutes");
 const reminderRoutes = require("./routes/reminderRoutes");
+const dashboardRoutes = require("./routes/dashboardRoutes");
 
 const app = express();
 
@@ -17,6 +18,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/tasks", taskRoutes);
 app.use("/api/notes", noteRoutes);
 app.use("/api/reminders", reminderRoutes);
+app.use("/api/dashboard", dashboardRoutes);
 
 // serve frontend
 app.use(express.static(path.join(__dirname, "../public")));
