@@ -56,7 +56,7 @@ async function createReminder() {
 
     try {
         await request("/reminders", "POST", { message, remindAt });
-        alert("Reminder set");
+        showToast("Reminder set", "success");
         reminderMsg.value = "";
         reminderTime.value = "";
         loadStats(); // Reload stats to show the new reminder

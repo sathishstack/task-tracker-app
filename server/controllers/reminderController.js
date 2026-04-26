@@ -1,15 +1,11 @@
 const reminderService = require("../services/reminderService");
 
 const create = async (req, res) => {
-    try {
-        const reminder = await reminderService.createReminder(
-            req.user.id,
-            req.body
-        );
-        res.status(201).json(reminder);
-    } catch (err) {
-        res.status(400).json({ message: err.message });
-    }
+    const reminder = await reminderService.createReminder(
+        req.user.id,
+        req.body
+    ).catch(err => { res.status(400); throw err; });
+    res.status(201).json(reminder);
 };
 
 module.exports = { create };

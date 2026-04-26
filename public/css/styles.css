@@ -331,19 +331,37 @@ ul {
     color: var(--text-muted);
 }
 
-/* Error Toast */
-#error {
+/* Toast Notifications */
+.toast-container {
     position: fixed;
-    bottom: 1rem;
-    right: 1rem;
-    background-color: var(--danger);
-    color: white;
+    bottom: 2rem;
+    right: 2rem;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.toast {
+    min-width: 250px;
     padding: 1rem 1.5rem;
     border-radius: var(--radius-sm);
+    color: white;
+    font-weight: 500;
     box-shadow: var(--shadow-md);
-    z-index: 1000;
-    animation: fadeIn 0.3s ease-out;
+    transform: translateX(120%);
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
+
+.toast.show {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.toast-error { background-color: var(--danger); }
+.toast-success { background-color: var(--success); }
+.toast-info { background-color: var(--primary); }
 
 /* Utilities */
 .flex-row {

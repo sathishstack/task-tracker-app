@@ -28,20 +28,34 @@ async function request(url, method = "GET", body = null) {
 
     if (!res.ok) {
         const errMsg = data.message || "Request failed";
-        showError(errMsg);
+        showToast(errMsg, "error");
         throw new Error(errMsg);
     }
 
     return data;
 }
 
-function showError(msg) {
-    let el = document.getElementById("error");
-    if (!el) {
-        el = document.createElement("div");
-        el.id = "error";
-        el.style.color = "red";
-        document.body.prepend(el);
+function showToast(msg, type = "error") {
+    let container = document.getElementById("toast-container");
+    if (!container) {
+        container = document.createElement("div");
+        container.id = "toast-container";
+        container.className = "toast-container";
+        document.body.appendChild(container);
     }
-    el.textContent = msg;
+
+    const toast = document.createElement("div");
+    toast.className = `toast toast-${type}`;
+    toast.textContent = msg;
+
+    container.appendChild(toast);
+
+    // Trigger reflow to apply transition
+    void toast.offsetWidth;
+    toast.classList.add("show");
+
+    setTimeout(() => {
+        toast.classList.remove("show");
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
 }

@@ -5,7 +5,9 @@ const jwt = require("jsonwebtoken");
 const registerUser = async ({ name, email, password }) => {
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-        throw new Error("User already exists");
+        const err = new Error("User already exists");
+        err.status = 400;
+        throw err;
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -22,12 +24,16 @@ const registerUser = async ({ name, email, password }) => {
 const loginUser = async ({ email, password }) => {
     const user = await User.findOne({ email });
     if (!user) {
-        throw new Error("Invalid credentials");
+        const err = new Error("Invalid credentials");
+        err.status = 401;
+        throw err;
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-        throw new Error("Invalid credentials");
+        const err = new Error("Invalid credentials");
+        err.status = 401;
+        throw err;
     }
 
     return generateToken(user);

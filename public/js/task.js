@@ -39,7 +39,7 @@ async function loadTasks() {
         });
 
     } catch (err) {
-        alert(err.message);
+        showToast(err.message, "error");
     } finally {
         loading.style.display = "none";
     }
@@ -49,23 +49,25 @@ async function createTask() {
     const title = document.getElementById("title").value;
     const priority = document.getElementById("priority").value;
 
-    if (!title) return alert("Title required");
+    if (!title) return showToast("Title required", "warning");
 
     try {
         await request("/tasks", "POST", { title, priority });
         document.getElementById("title").value = "";
+        showToast("Task created", "success");
         loadTasks();
     } catch (err) {
-        alert(err.message);
+        // api.js already shows the error toast
     }
 }
 
 async function markDone(id) {
     try {
         await request(`/tasks/${id}`, "PUT", { status: "done" });
+        showToast("Task marked as done", "success");
         loadTasks();
     } catch (err) {
-        alert(err.message);
+        // api.js handles error toast
     }
 }
 
@@ -74,9 +76,10 @@ async function deleteTask(id) {
 
     try {
         await request(`/tasks/${id}`, "DELETE");
+        showToast("Task deleted", "success");
         loadTasks();
     } catch (err) {
-        alert(err.message);
+        // api.js handles error toast
     }
 }
 
